@@ -1,0 +1,17 @@
+{
+  "name": "simulation-api-iot",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Aurélien St",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-ws": "^5.0.2",
+    "lowdb": "^7.0.1"
+  }
+}

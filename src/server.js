@@ -1,11 +1,15 @@
 import launchDataGenerator from './generator.js';
 import express from 'express';
 import expressWebSocket from 'express-ws';
+import cors from 'cors';
 
 //! Web Server
 const app = express();
 const expressWs = expressWebSocket(app);
 const clients = expressWs.getWss('/api/sensors/realtime').clients;
+
+//! Middleware
+app.use(cors());
 
 //! Fake data generator
 const db = await launchDataGenerator((sensor, data) => {

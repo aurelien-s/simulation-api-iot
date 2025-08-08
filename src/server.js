@@ -13,6 +13,8 @@ app.use(cors());
 
 //! Fake data generator
 const db = await launchDataGenerator((sensor, data) => {
+
+  //! Notification of new data via WebSocket
   clients.forEach(client => {
     client.send(JSON.stringify({ sensor, data }));
   });
@@ -27,6 +29,7 @@ app.ws('/api/sensors/realtime', function (ws, req) {
 });
 
 //! Endpoints
+//? - Last value of sensors
 app.get('/api/sensors/current', async function (req, res) {
   await db.read();
   res.json({
@@ -35,21 +38,20 @@ app.get('/api/sensors/current', async function (req, res) {
   });
 });
 
+//? - History for one sensor
 app.get('/api/sensors/history', async function (req, res) {
   const { start, end, sensor } = req.query;
 
   if (!sensor) {
-    res.status(400).json({
-      message: 'Query "sensor" is required'
-    });
+    res.status(400).json({ message: 'Query "sensor" is required' });
     return;
   }
-  
+
   const tempDate1 = end ? new Date(end) : new Date();
   const historyEnd = tempDate1.toISOString();
-  
+
   tempDate1.setMinutes(tempDate1.getMinutes() - 10);
-  
+
   const tempDate2 = start ? new Date(start) : tempDate1;
   const historyStart = tempDate2.toISOString();
 
@@ -61,7 +63,7 @@ app.get('/api/sensors/history', async function (req, res) {
   });
 });
 
-//! Start du serveur
+//! Server start
 app.listen(3000, () => {
   console.log('Web server running on port 3000');
 });

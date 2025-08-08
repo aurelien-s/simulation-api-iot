@@ -1,12 +1,13 @@
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { round } from './helper/tools.js';
+import ms from 'ms';
 
 const TEMP_DELTA = 3;
-const TEMP_TIME = 5_000;
+const TEMP_TIME = '2m';
 
 const HUMIDITY_DELTA = 5;
-const HUMIDITY_TIME = 2_000;
+const HUMIDITY_TIME = '30s';
 
 
 export default async function launchDataGenerator(dataCallback) {
@@ -20,7 +21,7 @@ export default async function launchDataGenerator(dataCallback) {
   await db.read();
 
   //! Generate temperature
-  setInterval(async () => {
+  async function temperatureGenerator () {
     await db.update(({ temperature }) => {
       const lastData = temperature.findLast(() => true)?.value ?? 42;
 
@@ -33,10 +34,12 @@ export default async function launchDataGenerator(dataCallback) {
       temperature.push(data);
       dataCallback('temperature', data);
     });
-  }, TEMP_TIME);
+  }
+  setInterval(temperatureGenerator, ms(TEMP_TIME));
+  temperatureGenerator()
 
   //! Generate humidity
-  setInterval(async () => {
+  async function humidityGenerator() {
     await db.update(({ humidity }) => {
       const lastData = humidity.findLast(() => true)?.value ?? 80;
 
@@ -56,7 +59,9 @@ export default async function launchDataGenerator(dataCallback) {
       humidity.push(data);
       dataCallback('humidity', data);
     });
-  }, HUMIDITY_TIME);
+  }
+  setInterval(humidityGenerator, ms(HUMIDITY_TIME));
+  humidityGenerator();
 
   return db;
 } 

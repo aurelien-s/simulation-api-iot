@@ -2,6 +2,12 @@ import launchDataGenerator from './generator.js';
 import express from 'express';
 import expressWebSocket from 'express-ws';
 import cors from 'cors';
+import { argv } from 'node:process';
+
+//! Define server port
+const portRegex = /(?!^(--port|-p)=)[\d]+$/;
+const argPort = argv.find(arg => portRegex.test(arg));
+const port = argPort !== undefined ? parseInt(portRegex.exec(argPort)[0]) : 3000;
 
 //! Web Server
 const app = express();
@@ -64,6 +70,6 @@ app.get('/api/sensors/history', async function (req, res) {
 });
 
 //! Server start
-app.listen(3000, () => {
-  console.log('Web server running on port 3000');
+app.listen(port, () => {
+  console.log(`Web server running on port ${port}`);
 });

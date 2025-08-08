@@ -6,6 +6,17 @@ npm i
 npm start
 ```
 
+### Customisation du port de la WebAPI
+Par defaut, le serveur utilise sur le port 3000. \
+Pour le modifier, il est faut utiliser l'agrument `--port=` ou `-p=`
+```
+# Commande Node
+node src/server.js --port=5555
+
+# Commande Npm
+npm start -- --port=5555 
+```
+
 ## Endpoints
 
 ### GET //localhost:3000/api/sensors/current
